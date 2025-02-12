@@ -1,13 +1,18 @@
 <?php
+// Mengambil nilai parameter 'id' dari URL
 $id = $_GET['id'];
 
+// Mengimpor data produk dari file 'datadummy.php'
 include "datadummy.php";
 
+// Inisialisasi variabel yang digunakan dalam transaksi
 $totalharga = 0;
 $pembayaran = 0;
 $kembalian = 0;
 
+// Mengecek apakah form telah dikirim dengan metode POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Mengambil data yang dikirimkan melalui form
     $notransaksi = $_POST['notransaksi'] ?? "";
     $namacustomer = $_POST['namacustomer'] ?? "";
     $tanggal = $_POST['tanggal'] ?? "";
@@ -17,24 +22,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $totalharga = $_POST['totalharga'];
     $jumlah = $_POST['jumlah'];
 
+    // Mendefinisikan kode voucher diskon
     $defaultvoucher = "JAMUKUAT";
-    if (isset($_POST['hitung'])) {
-            $voucher = $_POST['voucher'];
-            if(($voucher === "JAMUKUAT")){
-                $totalharga = ($harga * $jumlah) * 0.9;
-            }else{
-                $totalharga = $harga * $jumlah;
-            }
-        }
 
+    // Jika tombol 'Hitung Total' ditekan
+    if (isset($_POST['hitung'])) {
+        $voucher = $_POST['voucher'];
+        
+        // Jika voucher sesuai, diskon 10% diberikan
+        if ($voucher === "JAMUKUAT") {
+            $totalharga = ($harga * $jumlah) * 0.9;
+        } else {
+            $totalharga = $harga * $jumlah;
+        }
+    }
+
+    // Jika tombol 'Hitung Kembalian' ditekan
     if (isset($_POST['hitungkembalian'])) {
-        if($pembayaran < $totalharga){
+        // Validasi pembayaran tidak boleh kurang dari total harga
+        if ($pembayaran < $totalharga) {
             echo "<script>alert('Pembayaran tidak boleh kurang dari total harga!');</script>";
-        }else{
+        } else {
             $kembalian = $pembayaran - $totalharga;
         }
     }
 
+    // Jika tombol 'Simpan' ditekan, transaksi dianggap berhasil
     if (isset($_POST['simpan'])) {
         echo "<script>
         alert('Transaksi berhasil disimpan');
@@ -50,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Co Kreatif</title>
+    <!-- Memuat file Bootstrap untuk tampilan -->
     <link href="assets/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -100,13 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 <input type="date" class="form-control" name="tanggal">
                             </div>
 
-                            <!-- Input Pilih Produk -->
+                            <!-- Input Pilih Produk (readonly agar tidak bisa diubah) -->
                             <div class="mb-3">
                                 <label class="form-label">Pilih Produk</label>
                                 <input type="text" class="form-control" value="<?= $datapaket[$id][0] ?>" name="pilih" readonly>
                             </div>
 
-                            <!-- Input Harga Produk -->
+                            <!-- Input Harga Produk (readonly agar tidak bisa diubah) -->
                             <div class="mb-3">
                                 <label class="form-label">Harga Produk</label>
                                 <input type="text" class="form-control" value="<?= $datapaket[$id][2] ?>" name="harga" readonly>
@@ -127,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Tombol Hitung Total -->
                             <button type="submit" class="btn btn-success mb-3 mt-3" name="hitung">Hitung Total</button>
 
-                            <!-- Input Total Harga -->
+                            <!-- Input Total Harga (readonly agar tidak bisa diubah) -->
                             <div class="mb-3">
                                 <label class="form-label">Total Harga</label>
                                 <input type="text" class="form-control" name="totalharga" value="<?= $totalharga ?>" readonly>
@@ -142,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <!-- Tombol Hitung Kembalian -->
                             <button type="submit" class="btn btn-success mb-3 mt-3" name="hitungkembalian">Hitung Kembalian</button>
 
-                            <!-- Input Kembalian -->
+                            <!-- Input Kembalian (readonly agar tidak bisa diubah) -->
                             <div class="mb-3">
                                 <label class="form-label">Kembalian</label>
                                 <input type="text" class="form-control" name="kembalian" value="<?= $kembalian ?>" readonly>
@@ -157,12 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 
-    <!-- Font Awesome untuk ikon -->
+    <!-- Memuat file JavaScript Bootstrap -->
     <script src="assets/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
-
-<!-- Changellage
-    1.validasi pembayaran tidak boleh mines dan tidak boleh kurang dari total harga
-    2. kasih diskon JAMU KUAT, Diskonnya 10%
--->
