@@ -175,3 +175,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <script src="assets/js/bootstrap.min.js" crossorigin="anonymous"></script>
 </body>
 </html>
+
+<!-- Tantangan -->
+<!-- Buat diskon 10% dengan kode voucher "JAMUKUAT" -->
